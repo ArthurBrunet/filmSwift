@@ -7,6 +7,7 @@
 
 import SwiftUI
 
-class MyTableViewCell : UITableViewCell{
-    @IBOutlet weak var Name: UILabel!
+class MyCollectionViewCell: UICollectionViewCell {
+    @IBOutlet weak var name: UILabel!
+    
 }

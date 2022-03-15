@@ -14,6 +14,6 @@ class ViewDetailController: UIViewController {
     // quand la vue apparaît, après sa création
     override func viewDidLoad() {
         super.viewDidLoad();
-        name.text = "test"
+        name.text = movie?.name
     }
 }
