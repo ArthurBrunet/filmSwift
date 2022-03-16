@@ -9,4 +9,5 @@ import SwiftUI
 
 class MyCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var name: UILabel!
+    @IBOutlet weak var image: UIImageView!
 }
