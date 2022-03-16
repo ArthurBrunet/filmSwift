@@ -27,7 +27,7 @@ class CollectionViewController: UICollectionViewController {
     
     func filterContentForSearchText(_ searchText: String) {
         filteredTv = tabTv.filter { (tv: Tv) -> Bool in
-        return tv.name.lowercased().contains(searchText.lowercased())
+        return tv.name!.lowercased().contains(searchText.lowercased())
       }
       collectionView.reloadData()
     }
