@@ -10,10 +10,10 @@ import SwiftUI
 class ViewDetailController: UIViewController {
     
     @IBOutlet weak var name: UILabel!
-    var movie : Movie?
+    var tv : Tv?
     // quand la vue apparaît, après sa création
     override func viewDidLoad() {
         super.viewDidLoad();
-        name.text = movie?.name
+        name.text = tv?.name
     }
 }
