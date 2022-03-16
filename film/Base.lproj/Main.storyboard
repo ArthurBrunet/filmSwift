@@ -46,13 +46,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" sectionInsetReference="layoutMargins" id="bKS-KS-06j">
                             <size key="itemSize" width="170" height="233"/>
-                            <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                            <size key="headerReferenceSize" width="50" height="50"/>
                             <size key="footerReferenceSize" width="0.0" height="0.0"/>
                             <inset key="sectionInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                         </collectionViewFlowLayout>
                         <cells>
                             <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="moviesCell" id="bLr-f2-RRg" customClass="MyCollectionViewCell" customModule="film" customModuleProvider="target">
-                                <rect key="frame" x="18" y="8" width="170" height="233"/>
+                                <rect key="frame" x="18" y="58" width="170" height="233"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <collectionViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="ANs-9G-w2B">
                                     <rect key="frame" x="0.0" y="0.0" width="170" height="233"/>
@@ -74,6 +74,17 @@
                                 </connections>
                             </collectionViewCell>
                         </cells>
+                        <collectionReusableView key="sectionHeaderView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" reuseIdentifier="test" id="Cb1-JK-k0U">
+                            <rect key="frame" x="0.0" y="8" width="414" height="50"/>
+                            <autoresizingMask key="autoresizingMask"/>
+                            <subviews>
+                                <searchBar contentMode="redraw" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="o7O-9U-FjS">
+                                    <rect key="frame" x="0.0" y="3" width="414" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                </searchBar>
+                            </subviews>
+                        </collectionReusableView>
                         <connections>
                             <outlet property="dataSource" destination="g7s-Hb-1wY" id="fV4-8J-jvq"/>
                             <outlet property="delegate" destination="g7s-Hb-1wY" id="8ld-Hp-t3p"/>

@@ -16,6 +16,35 @@ struct Result : Decodable {
 
 class CollectionViewController: UICollectionViewController {
     
+    var tabTv : [Tv] = [];
+    var res: Result?;
+    
+    var filteredTv: [Tv] = []
+    let searchController = UISearchController(searchResultsController: nil)
+    var isSearchBarEmpty: Bool {
+      return searchController.searchBar.text?.isEmpty ?? true
+    }
+    
+    func filterContentForSearchText(_ searchText: String) {
+        filteredTv = tabTv.filter { (tv: Tv) -> Bool in
+        return tv.name.lowercased().contains(searchText.lowercased())
+      }
+      collectionView.reloadData()
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        fetchResult();
+        searchController.searchResultsUpdater = self
+        // 2
+        searchController.obscuresBackgroundDuringPresentation = false
+        // 3
+        searchController.searchBar.placeholder = "Search movies"
+        // 4
+        navigationItem.searchController = searchController
+        // 5
+        definesPresentationContext = true
+    }
     
     func fetchResult() {
         let apikey = "d3816181c54e220d8bc669bdc4503396"
@@ -53,13 +82,6 @@ class CollectionViewController: UICollectionViewController {
                     }).resume()
     }
     
-    var tabTv : [Tv] = [];
-    var res: Result?;
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        fetchResult();
-    }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
@@ -82,4 +104,16 @@ class CollectionViewController: UICollectionViewController {
         viewDetail.tv = tabTv[indexPath.row]
         present(viewDetail, animated: true, completion: nil)
     }
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        print("toto");
+        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "test", for: indexPath as IndexPath)
+        return headerView
+    }
+}
+
+extension CollectionViewController: UISearchResultsUpdating {
+  func updateSearchResults(for searchController: UISearchController) {
+      let searchBar = searchController.searchBar
+      filterContentForSearchText(searchBar.text!)
+  }
 }

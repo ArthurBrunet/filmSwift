@@ -9,5 +9,4 @@ import SwiftUI
 
 class MyCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var name: UILabel!
-    
 }
