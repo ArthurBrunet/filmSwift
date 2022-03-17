@@ -7,13 +7,7 @@
 
 import Foundation
 
-class Genre {
-    var id: Int;
-    var name: String;
-    
-    
-    init(id: Int,name: String) {
-        self.id = id;
-        self.name = name;
-    }
+struct Genre : Decodable{
+    var id: Int?;
+    var name: String?;
 }
