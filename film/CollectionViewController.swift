@@ -55,8 +55,10 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        filteredTv = searchText.isEmpty ? tabTv : tabTv.filter { (tv: Tv) -> Bool in
-            return tv.name!.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        if searchText.isEmpty {
+            filteredTv = tabTv
+        }else {
+            fetchSearchResult(search: searchText)
         }
         myCollection.reloadData()
     }
@@ -98,6 +100,48 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
 
                     }).resume()
     }
+    
+    func fetchSearchResult(search: String) {
+        let apikey = "d3816181c54e220d8bc669bdc4503396"
+        let language = "fr-FR"
+        let baseUrl = "https://api.themoviedb.org/3/";
+        let url = URL(string: baseUrl + "search/tv" + "?api_key="+apikey+"&language=" + language + "&query=" + search.replacingOccurrences(of: " ", with: "%20"))!
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            if let error = error {
+                debugPrint("Error with fetching post: \(error)")
+                return
+            }else {
+                debugPrint("No error")
+            }
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode)
+                      else {
+                        // \{id}
+                        debugPrint("Error with the response, unexpected status code: \(String(describing: response) )")
+                        debugPrint("Error with the response, unexpected status code:" + response.debugDescription)
+                        return
+                      }
+                    // analyse des données
+                      if let data = data{
+                          DispatchQueue.main.async() {
+                              self.res = try! JSONDecoder().decode(Result.self, from: data)
+                              var res : [Tv] = []
+                              for result in self.res!.results! {
+                                  print(result)
+                                  if result.backdrop_path != nil {
+                                      res.append(Tv(id: result.id, backdrop_path: result.backdrop_path, first_air_date: result.first_air_date , name: result.name, popularity: result.popularity, poster_path: result.poster_path, vote_average: result.vote_average, vote_count: result.vote_count))
+                                  }
+                              }
+                              self.filteredTv = res
+                              self.myCollection.reloadData()
+                          }
+                      }else{
+                        print("no data")
+                        return
+                      }
+
+                    }).resume()
+    }
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
     
