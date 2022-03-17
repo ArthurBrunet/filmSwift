@@ -35,7 +35,7 @@ extension UIImageView {
     }
 }
 
-class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBarDelegate{
+class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBarDelegate, UICollectionViewDelegate{
     
     @IBOutlet weak var mySearch: UISearchBar!
     var res: Result?;
@@ -100,10 +100,12 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "moviesCell", for: indexPath) as! MyCollectionViewCell
-
+        print("Dans le cul lulu")
+        
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "moviesCell", for: indexPath) as! MyCollectionViewCell2
+        
         cell.name?.text = filteredTv[indexPath.row].name
-        cell.image?.dl(from: "https://image.tmdb.org/t/p/w500"+filteredTv[indexPath.row].backdrop_path!)
+        //cell.image?.dl(from: "https://image.tmdb.org/t/p/w500"+filteredTv[indexPath.row].backdrop_path!)
         return cell
     }
 
@@ -115,11 +117,21 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
         return 1
     }
     
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func collectionView(_ collectionView: UICollectionView,
+                        shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        print("T'es dedans là ?")
+        return true;
+    }
+
+    
+    private func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
+        print("rentre dedans ta mer")
         let viewDetail : ViewDetailController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "movieDetail")
-        print("view")
         viewDetail.tv = filteredTv[indexPath.row]
         present(viewDetail, animated: true, completion: nil)
     }
-
+    
+    func collectionView(_ collectionView: UICollectionView, didUpdateFocusIn context: UICollectionViewFocusUpdateContext, with coordinator: UIFocusAnimationCoordinator) {
+        print("Dans le cul tutu")
+    }
 }
