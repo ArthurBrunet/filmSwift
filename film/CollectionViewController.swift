@@ -14,37 +14,53 @@ struct Result : Decodable {
     var total_results: Int?;
 }
 
-class CollectionViewController: UICollectionViewController {
+
+extension UIImageView {
+    
+    func dl(from urlString: String){
+        guard let url = URL(string: urlString) else {return}
+        contentMode = .scaleAspectFill
+        // on va aller charger l'img, like API
+        URLSession.shared.dataTask(with: url) { data, response, error in
+                    guard
+                        let httpURLResponse = response as? HTTPURLResponse, httpURLResponse.statusCode == 200,
+                        let mimeType = response?.mimeType, mimeType.hasPrefix("image"),
+                        let data = data, error == nil,
+                        let image = UIImage(data: data)
+                        else { return }
+                    DispatchQueue.main.async() {
+                        self.image = image
+                    }
+                }.resume()
+    }
+}
+
+class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBarDelegate{
+    
+    @IBOutlet weak var mySearch: UISearchBar!
+    var res: Result?;
+    @IBOutlet weak var myCollection: UICollectionView!
+    
+    var searchController: UISearchController!
+
+    var filteredTv: [Tv] = []
     
     var tabTv : [Tv] = [];
-    var res: Result?;
     
-    var filteredTv: [Tv] = []
-    let searchController = UISearchController(searchResultsController: nil)
-    var isSearchBarEmpty: Bool {
-      return searchController.searchBar.text?.isEmpty ?? true
-    }
-    
-    func filterContentForSearchText(_ searchText: String) {
-        filteredTv = tabTv.filter { (tv: Tv) -> Bool in
-        return tv.name!.lowercased().contains(searchText.lowercased())
-      }
-      collectionView.reloadData()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
+        myCollection.dataSource = self
+        mySearch.delegate = self
         fetchResult();
-        searchController.searchResultsUpdater = self
-        // 2
-        searchController.obscuresBackgroundDuringPresentation = false
-        // 3
-        searchController.searchBar.placeholder = "Search movies"
-        // 4
-        navigationItem.searchController = searchController
-        // 5
-        definesPresentationContext = true
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredTv = searchText.isEmpty ? tabTv : tabTv.filter { (tv: Tv) -> Bool in
+            return tv.name!.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        }
+        myCollection.reloadData()
+    }
+    
     
     func fetchResult() {
         let apikey = "d3816181c54e220d8bc669bdc4503396"
@@ -72,7 +88,8 @@ class CollectionViewController: UICollectionViewController {
                               for result in self.res!.results! {
                                   self.tabTv.append(Tv(id: result.id, backdrop_path: result.backdrop_path, first_air_date: result.first_air_date , name: result.name, popularity: result.popularity, poster_path: result.poster_path, vote_average: result.vote_average, vote_count: result.vote_count))
                               }
-                              self.collectionView.reloadData();
+                              self.filteredTv = self.tabTv
+                              self.myCollection.reloadData()
                           }
                       }else{
                         print("no data")
@@ -82,38 +99,27 @@ class CollectionViewController: UICollectionViewController {
                     }).resume()
     }
     
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-    // obligatoire à redéfinir
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.tabTv.count
-    }
-
-    // peupler les cellules de tables
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "moviesCell", for: indexPath) as! MyCollectionViewCell
-        cell.name?.text = tabTv[indexPath.row].name
+
+        cell.name?.text = filteredTv[indexPath.row].name
+        cell.image?.dl(from: "https://image.tmdb.org/t/p/w500"+filteredTv[indexPath.row].backdrop_path!)
         return cell
     }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.filteredTv.count
+    }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewDetail : ViewDetailController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "movieDetail")
-        viewDetail.tv = tabTv[indexPath.row]
+        print("view")
+        viewDetail.tv = filteredTv[indexPath.row]
         present(viewDetail, animated: true, completion: nil)
     }
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        print("toto");
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "test", for: indexPath as IndexPath)
-        return headerView
-    }
-}
 
-extension CollectionViewController: UISearchResultsUpdating {
-  func updateSearchResults(for searchController: UISearchController) {
-      let searchBar = searchController.searchBar
-      filterContentForSearchText(searchBar.text!)
-  }
 }

@@ -22,6 +22,8 @@
 		5FC0C1F227E0C59E00D58E66 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC0C1F127E0C59E00D58E66 /* Movie.swift */; };
 		5FC0C1F427E0C60000D58E66 /* MyCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC0C1F327E0C60000D58E66 /* MyCollectionViewCell.swift */; };
 		5FC0C1F627E0C9D200D58E66 /* ViewDetailController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC0C1F527E0C9D200D58E66 /* ViewDetailController.swift */; };
+		5FFBF12527E21EA50009A68C /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFBF12427E21EA50009A68C /* GradientView.swift */; };
+		5FFBF12727E22D290009A68C /* MyViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFBF12627E22D290009A68C /* MyViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		5FC0C1F127E0C59E00D58E66 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
 		5FC0C1F327E0C60000D58E66 /* MyCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyCollectionViewCell.swift; sourceTree = "<group>"; };
 		5FC0C1F527E0C9D200D58E66 /* ViewDetailController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewDetailController.swift; sourceTree = "<group>"; };
+		5FFBF12427E21EA50009A68C /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		5FFBF12627E22D290009A68C /* MyViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -124,6 +128,8 @@
 				37546B0127E1D93800E52CB2 /* TV.swift */,
 				37546B0327E1DA3100E52CB2 /* Genre.swift */,
 				37546B0527E21BE600E52CB2 /* TVDetail.swift */,
+				5FFBF12427E21EA50009A68C /* GradientView.swift */,
+				5FFBF12627E22D290009A68C /* MyViewController.swift */,
 			);
 			path = film;
 			sourceTree = "<group>";
@@ -285,6 +291,8 @@
 				5FC0C1F427E0C60000D58E66 /* MyCollectionViewCell.swift in Sources */,
 				5FC0C1B327E0AF1B00D58E66 /* SceneDelegate.swift in Sources */,
 				37546B0427E1DA3100E52CB2 /* Genre.swift in Sources */,
+				5FFBF12727E22D290009A68C /* MyViewController.swift in Sources */,
+				5FFBF12527E21EA50009A68C /* GradientView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
