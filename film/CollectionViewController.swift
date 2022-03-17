@@ -49,9 +49,9 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchResult();
         myCollection.dataSource = self
         mySearch.delegate = self
-        fetchResult();
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
@@ -100,10 +100,13 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "moviesCell", for: indexPath) as! MyCollectionViewCell
 
         cell.name?.text = filteredTv[indexPath.row].name
         cell.image?.dl(from: "https://image.tmdb.org/t/p/w500"+filteredTv[indexPath.row].backdrop_path!)
+        cell.tv = filteredTv[indexPath.row]
+        cell.parent = self
         return cell
     }
 
@@ -113,13 +116,6 @@ class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBa
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 1
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let viewDetail : ViewDetailController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "movieDetail")
-        print("view")
-        viewDetail.tv = filteredTv[indexPath.row]
-        present(viewDetail, animated: true, completion: nil)
     }
 
 }
