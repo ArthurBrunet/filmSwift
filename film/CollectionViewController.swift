@@ -35,26 +35,32 @@ extension UIImageView {
     }
 }
 
-class CollectionViewController: UICollectionViewController, UISearchBarDelegate {
+class MyViewController: UIViewController ,UICollectionViewDataSource, UISearchBarDelegate{
     
-    // var tabTv : [Tv] = [];
+    @IBOutlet weak var mySearch: UISearchBar!
     var res: Result?;
+    @IBOutlet weak var myCollection: UICollectionView!
     
+    var searchController: UISearchController!
+
     var filteredTv: [Tv] = []
     
-    
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print("toto")
-        filteredTv = searchText.isEmpty ? filteredTv : filteredTv.filter { (tv: Tv) -> Bool in
-            return tv.name!.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
-        }
-        collectionView.reloadData()
-    }
+    var tabTv : [Tv] = [];
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        myCollection.dataSource = self
+        mySearch.delegate = self
         fetchResult();
     }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        filteredTv = searchText.isEmpty ? tabTv : tabTv.filter { (tv: Tv) -> Bool in
+            return tv.name!.range(of: searchText, options: .caseInsensitive, range: nil, locale: nil) != nil
+        }
+        myCollection.reloadData()
+    }
+    
     
     func fetchResult() {
         let apikey = "d3816181c54e220d8bc669bdc4503396"
@@ -80,9 +86,10 @@ class CollectionViewController: UICollectionViewController, UISearchBarDelegate 
                           DispatchQueue.main.async() {
                               self.res = try! JSONDecoder().decode(Result.self, from: data)
                               for result in self.res!.results! {
-                                  self.filteredTv.append(Tv(id: result.id, backdrop_path: result.backdrop_path, first_air_date: result.first_air_date , name: result.name, popularity: result.popularity, poster_path: result.poster_path, vote_average: result.vote_average, vote_count: result.vote_count))
+                                  self.tabTv.append(Tv(id: result.id, backdrop_path: result.backdrop_path, first_air_date: result.first_air_date , name: result.name, popularity: result.popularity, poster_path: result.poster_path, vote_average: result.vote_average, vote_count: result.vote_count))
                               }
-                              self.collectionView.reloadData();
+                              self.filteredTv = self.tabTv
+                              self.myCollection.reloadData()
                           }
                       }else{
                         print("no data")
@@ -92,31 +99,27 @@ class CollectionViewController: UICollectionViewController, UISearchBarDelegate 
                     }).resume()
     }
     
-    
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 1
-    }
-
-    // obligatoire à redéfinir
-    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return self.filteredTv.count
-    }
-
-    // peupler les cellules de tables
-    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "moviesCell", for: indexPath) as! MyCollectionViewCell
+
         cell.name?.text = filteredTv[indexPath.row].name
         cell.image?.dl(from: "https://image.tmdb.org/t/p/w500"+filteredTv[indexPath.row].backdrop_path!)
         return cell
     }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return self.filteredTv.count
+    }
     
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let viewDetail : ViewDetailController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(identifier: "movieDetail")
+        print("view")
         viewDetail.tv = filteredTv[indexPath.row]
         present(viewDetail, animated: true, completion: nil)
     }
-    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "test", for: indexPath as IndexPath)
-        return headerView
-    }
+
 }
