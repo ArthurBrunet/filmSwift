@@ -108,7 +108,7 @@ class ViewDetailController: UIViewController {
                               self.backgroundPath.dl(from: String("https://image.tmdb.org/t/p/w500") +  self.tvDetail!.backdrop_path!)
                               self.imageLogo.dl(from: String("https://image.tmdb.org/t/p/w500") + self.tvDetail!.poster_path!)
                               self.summary.text = self.tvDetail?.overview
-                              self.note.text = String(format: "%.1f", self.tvDetail?.vote_average ?? "Inconnue")
+                              self.note.text = String(format: "%.1f", self.tvDetail?.vote_average ?? "Inconnue") + " / 10"
                               self.date.text = self.tvDetail?.first_air_date
                               self.nbSaison.text = "Saisons : " +             String(format: "%O", self.tvDetail?.number_of_seasons ?? "0")
                               self.nbEpisode.text = "Episodes : " + String(format: "%O", self.tvDetail?.number_of_episodes ?? "0")
