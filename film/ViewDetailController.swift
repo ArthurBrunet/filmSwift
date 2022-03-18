@@ -6,6 +6,13 @@
 //
 
 import SwiftUI
+import AVKit
+import AVFoundation
+
+struct resultVideo: Decodable {
+    var id: Int?;
+    var results: [tvVideo]?;
+}
 
 class ViewDetailController: UIViewController {
     
@@ -17,8 +24,60 @@ class ViewDetailController: UIViewController {
     @IBOutlet weak var date: UILabel!
     @IBOutlet weak var nbSaison: UILabel!
     @IBOutlet weak var nbEpisode: UILabel!
+    @IBOutlet weak var trailerButton: UIButton!
+    
+    @IBAction func playVideo(_ sender: UIButton) {
+        self.trailerButton.pulsate()
+        fetchURLVideo()
+    }
+    
     var tv : Tv?
     var tvDetail: TvDetail?;
+    var resultVideoAPI: resultVideo?;
+    
+    func fetchURLVideo() {
+        print("fetch detail")
+        let apikey = "d3816181c54e220d8bc669bdc4503396"
+        let baseUrl = "https://api.themoviedb.org/3/";
+        let urlStr = baseUrl + "tv/" + String(tv!.id!) + "/videos" + "?api_key="+apikey;
+        let url = URL(string: urlStr )!
+        URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            if let error = error {
+                debugPrint("Error with fetching post: \(error)")
+                return
+            }else {
+                debugPrint("No error")
+            }
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode)
+                      else {
+                        // \{id}
+                        debugPrint("Error with the response, unexpected status code: \(String(describing: response) )")
+                        debugPrint("Error with the response, unexpected status code:" + response.debugDescription)
+                        return
+                      }
+                    // analyse des données
+                      if let data = data{
+                          DispatchQueue.main.async() {
+                              self.resultVideoAPI = try! JSONDecoder().decode(resultVideo.self, from: data)
+                              for element in self.resultVideoAPI!.results! {
+                                
+                                  if(element.site! == "YouTube" && element.type!  == "Trailer") {
+                                      let urlVideo : String = String("https://youtu.be/") + element.key!
+                                      guard let url = URL(string: urlVideo) else {return}
+                                      if UIApplication.shared.canOpenURL(url) {
+                                         UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                                      }
+                                  }
+                              }
+                          }
+                      }else{
+                        print("no data")
+                        return
+                      }
+
+                    }).resume()
+    }
+ 
     
     func fetchDetail() {
         print("fetch detail")
@@ -67,6 +126,5 @@ class ViewDetailController: UIViewController {
         super.viewDidLoad();
         fetchDetail();
         summary.isEditable = false;
-        
     }
 }
